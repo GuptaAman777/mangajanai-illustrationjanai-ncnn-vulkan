@@ -1,8 +1,10 @@
-# ONNX to Vulkan-Capable ncnn Models
+# MangaJaNai & IllustrationJaNai — Vulkan-Capable ncnn Models
 
 This repository provides **22 image super-resolution models** (MangaJaNai & IllustrationJaNai) converted from FP16 ONNX into **Vulkan-capable `ncnn` models** (`.ncnn.param` + `.ncnn.bin`), verified to run with **zero CPU layer fallbacks** (`support_vulkan = True` for all layers) on both FP16-capable and FP32-only Vulkan GPUs.
 
-> **Direct Model Downloads**: All **22 `.onnx`**, **22 `.ncnn.param`**, and **22 `.ncnn.bin`** files are uploaded individually (uncompressed, no `.zip` archives) in [**GitHub Releases**](../../releases).
+> **Direct Model Downloads (NCNN Only)**: All **22 `.ncnn.param`** and **22 `.ncnn.bin`** files (**44 files total**, NCNN models only) are uploaded individually without any `.zip` compression in [**GitHub Releases**](https://github.com/GuptaAman777/mangajanai-illustrationjanai-ncnn-vulkan/releases).
+>
+> **Use with `psd-converter`**: You can use these Vulkan NCNN models directly inside [**ImageTool (`psd-converter`)**](https://github.com/GuptaAman777/psd-converter) for local Vulkan-accelerated AI super-resolution.
 
 ---
 
@@ -11,15 +13,11 @@ This repository provides **22 image super-resolution models** (MangaJaNai & Illu
 ```text
 .
 ├── scripts/          # Conversion and Vulkan/ONNX verification scripts
-├── ncnn/             # Converted ncnn graph files (.ncnn.param; .ncnn.bin in Releases)
-│   ├── ESRGAN_2x/    # 7 models
-│   ├── ESRGAN_4x/    # 7 models
-│   ├── FDAT/         # 6 models
-│   └── SPAN/         # 2 models
-├── ESRGAN_2x/        # Original FP16 ONNX models (hosted in Releases)
-├── ESRGAN_4x/        # Original FP16 ONNX models (hosted in Releases)
-├── FDAT/             # Original FP16 ONNX models (hosted in Releases)
-└── SPAN/             # Original FP16 ONNX models (hosted in Releases)
+└── ncnn/             # Converted ncnn graph files (.ncnn.param; .ncnn.bin + .ncnn.param in Releases)
+    ├── ESRGAN_2x/    # 7 models
+    ├── ESRGAN_4x/    # 7 models
+    ├── FDAT/         # 6 models
+    └── SPAN/         # 2 models
 ```
 
 ---
@@ -39,6 +37,14 @@ All converted models share the same `ncnn` blob interface:
 | **FDAT (2x)** | `2x` | `H % 16 == 0` and `W % 16 == 0` | `2x_IllustrationJaNai_V3denoise_FDAT_M_unshuffle_30k_fp16.ncnn.{param,bin}`<br>`2x_IllustrationJaNai_V3detail_FDAT_M_unshuffle_40k_fp16.ncnn.{param,bin}` |
 
 > **Note on alignment**: `ESRGAN_2x` and `FDAT` have the same divisibility requirements as the original ONNX models. For arbitrary image sizes, reflect-pad the input to the required multiple before running inference and crop the output back to `(H * scale, W * scale)`.
+
+---
+
+## Using with `psd-converter`
+
+These converted Vulkan `ncnn` models are compatible with [**`GuptaAman777/psd-converter`**](https://github.com/GuptaAman777/psd-converter) (*ImageTool v7.0 — PSD & AI Image Suite*):
+- Download the matching `.ncnn.param` and `.ncnn.bin` pair directly from [**GitHub Releases**](https://github.com/GuptaAman777/mangajanai-illustrationjanai-ncnn-vulkan/releases) (no archive extraction required).
+- Point `psd-converter`'s local Vulkan NCNN upscaling workflow to the downloaded model files to upscale manga, illustrations, and extracted `.psd` layers on any Vulkan-capable GPU.
 
 ---
 
@@ -199,11 +205,12 @@ Reproducible scripts are included in [`scripts/`](scripts/):
 
 ## Sources & Credits
 
-All pretrained weights and architectures belong to their respective original authors and projects:
+All original pretrained weights, architectures, and conversion/inference tools belong to their respective authors and projects:
 
-- **MangaJaNai & IllustrationJaNai Models**: [`the-database/MangaJaNai`](https://github.com/the-database/MangaJaNai) (created by `the-database`, including companion tools [`MangaJaNaiGUI`](https://github.com/the-database/MangaJaNaiGUI) and [`MangaJaNaiCLI`](https://github.com/the-database/MangaJaNaiCLI))
-- **FDAT Architecture** (*Fast Dual Attention Transformer*): [`stinkybread/FDAT`](https://github.com/stinkybread/FDAT) (created by `stinkybread`; see also [`stinkybread/FDAT-Models`](https://github.com/stinkybread/FDAT-Models))
+- **MangaJaNai & IllustrationJaNai Models**: [`the-database/MangaJaNai`](https://github.com/the-database/MangaJaNai) (by `the-database`, with companion apps [`MangaJaNaiGUI`](https://github.com/the-database/MangaJaNaiGUI) and [`MangaJaNaiCLI`](https://github.com/the-database/MangaJaNaiCLI))
+- **FDAT Architecture** (*Fast Dual Attention Transformer*): [`stinkybread/FDAT`](https://github.com/stinkybread/FDAT) and [`stinkybread/FDAT-Models`](https://github.com/stinkybread/FDAT-Models)
 - **SPAN Architecture** (*Swift Parameter-free Attention Network*): [`hongyuanyu/SPAN`](https://github.com/hongyuanyu/SPAN)
 - **ESRGAN Architecture** (*Enhanced Super-Resolution Generative Adversarial Networks*): [`xinntao/ESRGAN`](https://github.com/xinntao/ESRGAN)
 - **Training & Model Loader Ecosystem**: [`the-database/traiNNer-redux`](https://github.com/the-database/traiNNer-redux) and [`chaiNNer-org/spandrel`](https://github.com/chaiNNer-org/spandrel)
-- **Inference & Conversion Frameworks**: [`Tencent/ncnn`](https://github.com/Tencent/ncnn) and [`pnnx/pnnx`](https://github.com/pnnx/pnnx)
+- **Conversion & Inference Frameworks**: [`Tencent/ncnn`](https://github.com/Tencent/ncnn) and [`pnnx/pnnx`](https://github.com/pnnx/pnnx)
+- **Compatible Desktop Tool**: [`GuptaAman777/psd-converter`](https://github.com/GuptaAman777/psd-converter) (*ImageTool v7.0 — PSD & AI Image Suite*)

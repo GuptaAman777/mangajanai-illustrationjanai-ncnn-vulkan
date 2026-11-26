@@ -1,0 +1,16 @@
+# Large binary models are hosted directly in GitHub Releases (uncompressed)
+*.onnx
+*.ncnn.bin
+*.pt
+*.pth
+*.npy
+
+# Temporary / scratch / Python artifacts
+_test_pnnx/
+__pycache__/
+*.pyc
+*.pnnx.param
+*.pnnx.bin
+*_pnnx.py
+*_ncnn.py
+*.pnnx.onnx
